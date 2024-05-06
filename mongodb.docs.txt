@@ -1,0 +1,2718 @@
+==========Mongodb Udemy Course starts from here================
+====================================================================
+                            SECTION 1 (SETUP Mongodb)
+====================================================================
+Run mongod on Mac M1 -
+
+mv mongodb-macos-arm64-7.0.7.tgz /Users/wspace
+sudo mkdir -p data/db (if not created)
+sudo mongod --dbpath /Users/wspace/data/db (path of db)
+
+Set path in .zshrc file -
+#export PATH="/opt/homebrew/opt/node@16/bin:$PATH"
+export PATH="$HOME/.composer/vendor/bin:$PATH"
+#export PATH="/opt/homebrew/opt/php@7.4/bin:$PATH"
+export XAMPP_HOME=/Applications/XAMPP
+export PATH=${XAMPP_HOME}/bin:${PATH}
+export PATH=${PATH}:/Users/wspace/mongodb-macos-aarch64-7.0.7/bin
+
+wspace@Animeshs-MacBook-Pro ~ % sudo mongod --dbpath /Users/wspace/mongodb/data --logpath /Users/wspace/mongodb/logs/mongo.log
+
+How to use mongoshell =>
+1. Download mongo shell  .zip file and unzip it 
+2. If you wanna keep it in some soecific dir then do that and accordingly set the path of bin dir (which we get inside the unzipped file of mongoshell i.e /Users/wspace/mongodb/mongodb-macos-aarch64-7.0.7/bin ) in .zshrc file
+3. open termial and type mongosh and allow it if getting killed error from Privacy & Security setting. 
+4. It will be connected to mongodb (Mongodb server should be accessible then it will connect to db called test by default)
+5. Now start exploring mongodb queries on terminal
+
+add below line at the end of line inside .zshrc file
+PATH=${PATH}:/Users/wspace/mongodb/mongodb-macos-aarch64-7.0.7/bin
+
+Perform CRUD Operations => https://www.mongodb.com/docs/mongodb-shell/crud/
+
+Installing mongoimport
+In this course, we'll also use another tool called mongoimport. It's a tool / local command which we will occasionally use in this course to import some prepared data into a MongoDB database.
+
+Since it wasn't installed together with the MongoDB server + client, you need to install it as a separate tool, following the installation instructions you find here (or use the links below): https://docs.mongodb.com/database-tools/installation/installation/ (these "Database tools" contain the mongoimport tool / command).
+
+Windows Installation: https://docs.mongodb.com/database-tools/installation/installation-windows/#installation
+
+macOS Installation: https://docs.mongodb.com/database-tools/installation/installation-macos/#installation
+
+Linux Installation: https://docs.mongodb.com/database-tools/installation/installation-linux/#installation
+
+
+Start Developing with MongoDB => https://www.mongodb.com/docs/drivers/
+
+
+mongo --port 27018 (can run mongo server on diff port if default port is busy using --port )
+
+show dbs
+use flights
+====================================================================
+                            SECTION 2 (Understanding Basics & CRUD OPERATIONS)
+====================================================================
+db.flightData.insertOne(
+{
+    "departureAirport": "MUC",
+    "arrivalAirport": "SFO",
+    "aircraft": "Airbus A380",
+    "distance": 12000,
+    "intercontinental": true
+  })
+
+
+  db.flightData.insertOne(
+{
+    departureAirport: "MUC",
+    arrivalAirport: "SFO",
+    aircraft: "Airbus A380",
+    distance: 12000,
+    intercontinental: true
+  })
+
+Both are accepted
+
+Crud Operations -
+*1. Create :*
+a) insertOne(data, options)
+b) insertMany(data, options)
+
+*2. Read:*
+a) find(filter, options)
+b) findOne(filter, options)
+
+*3. Update:*
+a) updateOne(filter, data, options)
+b) updateMany(filter, data, options)
+c) replaceOne(filter, data, options)
+
+*4. Delete:*
+a) deleteOne(filter, options)
+b) deleteMany(filter, options)
+
+
+====================================
+1. a)
+sample_mflix> db.flightData.insertOne({
+...     "departureAirport": "MUC",
+...     "arrivalAirport": "SFO",
+...     "aircraft": "Airbus A380",
+...     "distance": 12000,
+...     "intercontinental": true
+...   })
+{
+  acknowledged: true,
+  insertedId: ObjectId('661ee70b867cbfe21807efea')
+}
+
+1. b)
+sample_mflix> db.movies.insertMany([
+...    {
+...       title: "Jurassic World: Fallen Kingdom",
+...       genres: [ "Action", "Sci-Fi" ],
+...       runtime: 130,
+...       rated: "PG-13",
+...       year: 2018,
+...       directors: [ "J. A. Bayona" ],
+...       cast: [ "Chris Pratt", "Bryce Dallas Howard", "Rafe Spall" ],
+...       type: "movie"
+...     },
+...     {
+...       title: "Tag",
+...       genres: [ "Comedy", "Action" ],
+...       runtime: 105,
+...       rated: "R",
+...       year: 2018,
+...       directors: [ "Jeff Tomsic" ],
+...       cast: [ "Annabelle Wallis", "Jeremy Renner", "Jon Hamm" ],
+...       type: "movie"
+...     }
+... ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('661ecdc8867cbfe21807efe8'),
+    '1': ObjectId('661ecdc8867cbfe21807efe9')
+  }
+}
+=========================
+
+2. a)
+sample_mflix> db.flightData.find({departureAirport: "MUC"})
+[
+  {
+    _id: ObjectId('661ee70b867cbfe21807efea'),
+    departureAirport: 'MUC',
+    arrivalAirport: 'SFO',
+    aircraft: 'Airbus A380',
+    distance: 13000,
+    intercontinental: true
+  }
+]
+-------------------------------
+sample_mflix> db.flightData.find({distance: {$gt: 1000}}).pretty()
+[
+  {
+    _id: ObjectId('661ee70b867cbfe21807efea'),
+    departureAirport: 'MUC',
+    arrivalAirport: 'SFO',
+    aircraft: 'Airbus A380',
+    distance: 13000,
+    intercontinental: true
+  }
+]
+
+2. b)
+sample_mflix> db.flightData.findOne({departureAirport: "MUC"})
+{
+  _id: ObjectId('661ee70b867cbfe21807efea'),
+  departureAirport: 'MUC',
+  arrivalAirport: 'SFO',
+  aircraft: 'Airbus A380',
+  distance: 13000,
+  intercontinental: true
+}
+sample_mflix> 
+
+=============================
+
+3. a)
+sample_mflix> db.flightData.updateOne({departureAirport: "MUC"}, {$set: {distance: 13000}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+======================================================
+sample_mflix> db.flightData.updateOne({_id: ObjectId('661ee70b867cbfe21807efea')}, {$set: {distance: 14000}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+====================================================================
+sample_mflix> db.flightData.update({_id: ObjectId('661ee70b867cbfe21807efea')}, {distance: 15000})
+DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or bulkWrite.
+
+Replace One -
+sample_mflix> db.flightData.replaceOne({_id: ObjectId('661ee70b867cbfe21807efea')}, {
+...     "departureAirport": "MUC",
+...     "arrivalAirport": "SFO",
+...     "aircraft": "Airbus A380",
+...     "distance": 12000,
+...     "intercontinental": true
+...   })
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+sample_mflix> 
+
+
+sample_mflix> db.passengers.insertMany([{
+...     "name": "Max Schwarzmueller",
+...     "age": 29
+...   }
+])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('661fc5fe867cbfe21807efeb')
+  }
+}
+
+
+db.passengers.find().forEach((passengerData) => {printjson(passengerData)})
+
+sample_mflix> db.passengers.find().forEach((passengerData) => {printjson(passengerData)})
+{
+  _id: ObjectId('661fc5fe867cbfe21807efeb'),
+  name: 'Max Schwarzmueller',
+  age: 29
+}
+
+sample_mflix> 
+
+find() gives cursor not the elements itself.
+
+sample_mflix> db.passengers.findOne()
+{
+  _id: ObjectId('661fc5fe867cbfe21807efeb'),
+  name: 'Max Schwarzmueller',
+  age: 29
+}
+
+Projection =>
+sample_mflix> db.passengers.find({}, {name: 1})
+[
+  {
+    _id: ObjectId('661fc5fe867cbfe21807efeb'),
+    name: 'Max Schwarzmueller'
+  }
+]
+
+By default id is included in projection but if we wanna remove then put id: 0 and rest props are by default 0 only.
+
+sample_mflix> db.passengers.find({}, {name: 1, _id: 0})
+[
+  { name: 'Max Schwarzmueller' }
+]
+
+
+================================================================
+Embedded Documents => Can insert upto 100 levels of nested objects.
+
+sample_mflix> db.flightData.updateMany({}, {$set: {status: {description: "on -time", lastUpdated: "1 hour ago"}}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+Example of Embedded Documents => 
+sample_mflix> db.flightData.find()
+[
+  {
+    _id: ObjectId('661ee70b867cbfe21807efea'),
+    departureAirport: 'MUC',
+    arrivalAirport: 'SFO',
+    aircraft: 'Airbus A380',
+    distance: 12000,
+    intercontinental: true,
+    status: { description: 'on -time', lastUpdated: '1 hour ago' }
+  }
+
+sample_mflix> db.flightData.updateMany({}, { $set: { status: { description: "on -time", lastUpdated: "1 hour ago", details: {responsible: "Animesh"} } } })
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+sample_mflix> db.flightData.find().pretty()
+[
+  {
+    _id: ObjectId('661ee70b867cbfe21807efea'),
+    departureAirport: 'MUC',
+    arrivalAirport: 'SFO',
+    aircraft: 'Airbus A380',
+    distance: 12000,
+    intercontinental: true,
+    status: {
+      description: 'on -time',
+      lastUpdated: '1 hour ago',
+      details: { responsible: 'Animesh' }
+    }
+  }
+]
+sample_mflix> 
+]
+
+======================================================
+Arrays (List of data) =>
+
+sample_mflix> db.passengers.updateOne({name: "Chris Hayton"}, {$set: {hobbies: ["cooking","running"]}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+// Fetching hobbies 
+sample_mflix> db.passengers.findOne({name: "Chris Hayton"}).hobbies
+[ 'cooking', 'running' ]
+
+sample_mflix> db.passengers.find({hobbies: "cooking"})
+[
+  {
+    _id: ObjectId('661fc5fe867cbfe21807efed'),
+    name: 'Chris Hayton',
+    age: 35,
+    hobbies: [ 'cooking', 'running' ]
+  }
+]
+
+// Fetching data based on nested object property
+sample_mflix> db.flightData.findOne({"status.description": "on -time"})
+{
+  _id: ObjectId('661ee70b867cbfe21807efea'),
+  departureAirport: 'MUC',
+  arrivalAirport: 'SFO',
+  aircraft: 'Airbus A380',
+  distance: 12000,
+  intercontinental: true,
+  status: {
+    description: 'on -time',
+    lastUpdated: '1 hour ago',
+    details: { responsible: 'Animesh' }
+  }
+}
+
+================Summary of above concepts===========
+
+-----------------Databases, Collections, Documents----------------
+1. A Database holds multiple Collections where each Collection can hold multiple Documents
+
+2. Database and Collections are created "lazily" (i.e when a document is inserted)
+
+3. A Document can't directly be inserted into a Database, you need to use a Collection!
+
+-----------------Document Structure----------------
+1. Each document needs a unique ID(and gets one by default)
+
+2. you may have Embedded documents and array fields
+
+-----------------CRUD Operations----------------
+1. CRUD = Create, Read, Update and Delete
+2. MongoDB offers multiple CRUD operations for single-document and bulk actions(e.g. insertOnce(), insertMany(), ...)
+3. Some methods require an argument(e.g. insertOne()), others don't (e.g. find())
+4. find() return a cursor, NOT a list of documents
+5. Use filters to find specific documents
+
+-----------------Retrieving Data----------------
+1. Use filters and operators(e.g $gt) to limit the number of documents you retrieve
+
+2. Use projection to limit the set of fields you retrieve
+
+================End Summary of above concepts===========
+Useful Resources & Links
+Useful Articles/ Docs:
+
+Learn more about the MongoDB Drivers: https://docs.mongodb.com/ecosystem/drivers/
+
+Dive into the official Getting Started Docs: https://docs.mongodb.com/manual/tutorial/getting-started/
+
+
+
+====================================================================
+                            SECTION 3 (Schema & Relations)
+====================================================================
+Resetting Your Database
+Important: We will regularly start with a clean database server (i.e. all data was purged) in this course.
+
+To get rid of your data, you can simply load the database you want to get rid of (use databaseName) and then execute db.dropDatabase().
+
+Similarly, you could get rid of a single collection in a database via db.myCollection.drop().
+
+Data Schema & Data Modelling: Storing Your Data Correctly
+--------------------------------------------------------
+What's Inside This Module:
+1. Understanding Document Schemas & Data Types
+2. Modelling Relations
+3. Schema Validation
+
+Why do we use Schemas?
+Isn't MongoDB all about having No data Schemas? =>
+MongoDB enforces no Schemas! Documents don't have to use the same Schema inside of one collection =>
+But that does not mean that you can't use some kind of schema!
+
+sample_mflix> show dbs
+admin          40.00 KiB
+config         60.00 KiB
+local          72.00 KiB
+sample_mflix  184.00 KiB
+tshirt_store   24.00 KiB
+videotube     108.00 KiB
+sample_mflix> use shop
+switched to db shop
+shop> db.products.insertOne({name: "A book", price: 12.99})
+{
+  acknowledged: true,
+  insertedId: ObjectId('66208abeade174e1a207efe6')
+}
+
+shop> db.products.insertOne({name: "T-Shirt", seller: {name: "Max", age: 29}})
+{
+  acknowledged: true,
+  insertedId: ObjectId('6620b184ade174e1a207efe7')
+}
+
+shop> db.products.find()
+[
+  {
+    _id: ObjectId('66208abeade174e1a207efe6'),
+    name: 'A book',
+    price: 12.99
+  },
+  {
+    _id: ObjectId('6620b184ade174e1a207efe7'),
+    name: 'T-Shirt',
+    seller: { name: 'Max', age: 29 }
+  }
+]
+shop>
+
+To Schema Or Not To Schema
+-------------------------------
+Chaos! ============> SQL World
+--------------------------------
+Products | Products | Products
+---------------------------------
+{             
+    title: "Book",
+    price: 12.99
+}
+very different => NOSQL         
+{
+    name: "Bottle",
+    available: true
+}
+------------------
+{             
+    title: "Book",
+    price: 12.99
+}
+extra data => NOSQL
+{             
+    title: "Book",
+    price: 12.99,
+    available: true
+}
+--------------------
+{             
+    title: "Book",
+    price: 12.99
+}
+fully Equality => SQL WORLD
+{             
+    title: "Book",
+    price: 12.99
+}
+------------------------------
+As shown above, By nature, mongodb is having no schema but we can have schema based apps as well so structure is required.
+
+shop> db.products.deleteMany({})
+{ acknowledged: true, deletedCount: 2 }
+shop> 
+
+Data Types =>
+1. Text
+2. Boolean
+3. Numbers:
+    1. Integer(int32) (55)
+    2. NumberLong(int64) (10000000000)
+    3. NumberDecimal (12.99)
+4. ObjectId (ObjectId("adfs))
+5. ISODate ("2024-04-18")
+6. Timestamp (123135463)
+7. Embedded document ({a: {}})
+8. Arrays ({b: []})
+
+shop> use companyData
+switched to db companyData
+companyData> db.companies.insertOne({name: "Fresh Apples Inc", isStartup: true, employees: 33, funding: 123456789 01234567890, details: {ceo: "Mark Super"}, tags: [{title: "super"}, {title: "perfect"}], foundingD
+companyData> db.companies.insertOne({name: "Fresh Apples Inc", isStartup: true, employees: 33, funding: 12345678901234567890, details: {ceo: "Mark Super"}, tags: [{title: "super"}, {title: "perfect"}], foundingDate: new Date(), insertedAt: new Timestamp ()})
+{
+  acknowledged: true,
+  insertedId: ObjectId('6620f032ade174e1a207efe8')
+}
+
+companyData> db.companies.findOne()
+{
+  _id: ObjectId('6620f032ade174e1a207efe8'),
+  name: 'Fresh Apples Inc',
+  isStartup: true,
+  employees: 33,
+  funding: 12345678901234567000,
+  details: { ceo: 'Mark Super' },
+  tags: [ { title: 'super' }, { title: 'perfect' } ],
+  foundingDate: ISODate('2024-04-18T10:04:34.699Z'),
+  insertedAt: Timestamp({ t: 1713434674, i: 1 })
+}
+
+companyData> db.numbers.insertOne({a:1})
+{
+  acknowledged: true,
+  insertedId: ObjectId('6620f512ade174e1a207efe9')
+}
+companyData> db.stats()
+{
+  db: 'companyData',
+  collections: Long('2'),
+  views: Long('0'),
+  objects: Long('2'),
+  avgObjSize: 130.5,
+  dataSize: 261,
+  storageSize: 24576,
+  indexes: Long('2'),
+  indexSize: 24576,
+  totalSize: 49152,
+  scaleFactor: Long('1'),
+  fsUsedSize: 346379530240,
+  fsTotalSize: 494384795648,
+  ok: 1
+}
+
+companyData> db.companies.drop()
+true
+companyData> db.stats()
+{
+  db: 'companyData',
+  collections: Long('1'),
+  views: Long('0'),
+  objects: Long('1'),
+  avgObjSize: 29,
+  dataSize: 29,
+  storageSize: 20480,
+  indexes: Long('1'),
+  indexSize: 20480,
+  totalSize: 40960,
+  scaleFactor: Long('1'),
+  fsUsedSize: 346381422592,
+  fsTotalSize: 494384795648,
+  ok: 1
+}
+
+
+Data Types & Limits
+MongoDB has a couple of hard limits - most importantly, a single document in a collection (including all embedded documents it might have) must be <= 16mb. Additionally, you may only have 100 levels of embedded documents.
+
+You can find all limits (in great detail) here: https://docs.mongodb.com/manual/reference/limits/
+
+For the data types, MongoDB supports, you find a detailed overview on this page: https://docs.mongodb.com/manual/reference/bson-types/
+
+Important data type limits are:
+
+Normal integers (int32) can hold a maximum value of +-2,147,483,647
+
+Long integers (int64) can hold a maximum value of +-9,223,372,036,854,775,807
+
+Text can be as long as you want - the limit is the 16mb restriction for the overall document
+
+It's also important to understand the difference between int32 (NumberInt), int64 (NumberLong) and a normal number as you can enter it in the shell. The same goes for a normal double and NumberDecimal.
+
+NumberInt creates a int32 value => NumberInt(55)
+
+NumberLong creates a int64 value => NumberLong(7489729384792)
+
+If you just use a number (e.g. insertOne({a: 1}), this will get added as a normal double into the database. The reason for this is that the shell is based on JS which only knows float/ double values and doesn't differ between integers and floats.
+
+NumberDecimal creates a high-precision double value => NumberDecimal("12.99") => This can be helpful for cases where you need (many) exact decimal places for calculations.
+
+When not working with the shell but a MongoDB driver for your app programming language (e.g. PHP, .NET, Node.js, ...), you can use the driver to create these specific numbers.
+
+Example for Node.js: http://mongodb.github.io/node-mongodb-native/3.1/api/Long.html
+
+This will allow you to build a NumberLong value like this:
+
+const Long = require('mongodb').Long;
+ 
+db.collection('wealth').insert( {
+    value: Long.fromString("121949898291")
+});
+By browsing the API docs for the driver you're using, you'll be able to identify the methods for building int32s, int64s etc.
+
+
+Data Schemas & Data Modelling
+1. Which Data does my App need or generate?
+a)User Information, Product Information, Orders, .
+b)Defines the Fields you'll need
+(and how they relate)
+
+2. Where do I need my Data?
+a) Welcome Page, Products List Page, Orders Page
+b) Defines your required collections + field groupings
+Which kind of Data or
+
+3. Information do I want to display?
+a) Welcome Page: Product Names; Products Page:
+b) Defines which queries you'll need
+
+4. How often do I fetch my data?
+a) For every page reload
+b) Defines whether you should optimize for easy fetching
+
+5. How often do I write or change my data?
+a) Orders=> Often Product Data => Rarely
+b) Defines whether you should optimize for easy writing
+
+Relations options
+======================
+1. One To One 
+Example #1 - Patient <-> Disease Summary ()
+a) One To One Relations - Embedded
+----------------------------------
+One Patient has one disease Summary, a disease belongs to one Patient
+
+db.patients.insertOne({
+    name: "Max",
+    age: 29,
+    diseaseSummary: "summary-max-1"
+})
+
+db.diseaseSummaries.insertOne({_id: "summary-max-1", diseases: ["cold", "broken log"]})
+
+var dsid = db.patients.findOne().diseaseSummary
+db.diseaseSummaries.find({_id: dsid})
+
+// Above e.g. is one to one relationship but has performance issue i.e not good for large data
+
+db.patients.deleteMany({})
+
+db.patients.insertOne({
+    name: "MAX",
+    age: 29,
+    diseaseSummary: {
+        diseases: ["cold", "broken log"]
+    }
+})
+
+db.patients.findOne()
+
+This is Embedded document and shows strong one to one relationship
+
+
+Example #2 - Person <-> Car
+b) One To One Relations - Using References
+--------------------------------------------
+One person has one car, a car belongs to one person
+
+Here we have different scenerio like we want to Perform analytics on persons and cars collections e.g we wanna deal with persons data only or cars data only for analytics (dont want to display persons and their cars on web page so in such scenerio we can store data separately with owner reference)
+
+db.persons.insertOne({
+    name: "Max",
+    age: 29,
+    salary: 3000
+})
+
+db.cars.insertOne({
+    model: "BMW",
+    price: 40000,
+    owner: ObjectId("id of above ceated person")
+})
+
+2. ONE TO MANY
+=======================================
+a) ONE TO MANY relationship - Embedded
+----------------------------------------
+db.questionThreads.insertOne({
+    creator: "max",
+    question: "How does that work?",
+    answers: [
+        {
+            text: "Like that."
+        },
+        {
+            text: "Thanks!"
+        }
+    ]
+})
+
+b) ONE TO MANY relationship - Using reference
+----------------------------------------
+Example #4 - City <-> Citizens
+One city has many Citizens and Citizens belongs to one city
+
+use cityData
+
+db.cities.insertOne({
+    name: "",
+    cordinates: {
+        lat: 21,
+        lng: 55,
+    }
+})
+
+db.cities.findOne()
+
+db.citizens.insertMany([{
+    name: "Animesh",
+    cityId: ObjectId("")
+},
+{
+    name: "Abhishek",
+    cityId: ObjectId("")
+}])
+
+db.citizens.find()
+
+3. MANY TO MANY
+a) Using Embedded
+Example #5 Customers <-> Products(Orders)
+One Customer has many products (via orders), a products belongs to many Customers
+
+use shop
+
+db.products.insertOne({
+    title: "A book",
+    price: 12.99
+})
+
+db.customers.insertOne({
+    name: "A",
+    age: 29
+})
+
+db.orders.insertOne({
+    productId: ObjectId("),
+    customerId: ObjectId(")
+}) // reference way
+
+can do in better way in mongodb way
+
+db.customers.updateOne({}, $set: {
+    orders:[
+        {
+            productId: ObjectId("),
+            quantity: 2
+        }
+    ]
+}) // Reference way
+
+db.customers.findOne()
+
+db.customers.updateOne({}, $set: {
+    orders:[
+        {
+            title: "A book",
+            price: 12.99,
+            quantity: 2
+        }
+    ]
+}) 
+// Embedded way of Many To Many relationship and disadvantages of this way is to data duplication but incase of scenerio where we do not need to make changes in orders details based on price, title of product is changed and orders data should be same as we ordered so in such case it's advantages of using embedded many to many relationship
+
+b) MANY TO MANY using reference
+
+Example #6 - Books <-> Authors
+One book has many authors and author belongs to many Books
+
+use bookRegistry
+
+db.books.insertOne({
+    name: "A",
+    authors: [
+        {
+            name: "A",
+            age: 29
+        },
+    ]
+})
+
+db.authors.insertOne({
+    authors: [
+        {
+            name: "A",
+            age: 29,
+            address: {
+                street: "tree"
+            }
+        }
+    ]
+})
+
+//As authors age will change every year and if we make changes in name then above case, is bad to implement such way  
+
+db.customers.updateOne({}, $set: {
+    authors:[
+        {
+            ObjectId(""),
+            ObjectId("")
+        }
+    ]
+})  // Referenced way
+
+==============Joining with $lookup for merging reference Relations==============
+
+db.books.aggregate([
+    {
+        $lookup: {
+            from: "authors",
+            localField: "authors",
+            foreignField: "_id",
+            as: "creators"
+        }
+    }
+])
+
+Example =>
+
+Users 
+Posts
+Comments - this collection not required as comment is not affacting anything if users or post data changes
+
+
+use blog
+
+db.users.insertMany([
+    {
+        name: "aaa",
+        age: 23,
+        email: "aaa@gmail.com"
+    },
+    {
+        name: "aaab",
+        age: 23,
+        email: "aaab@gmail.com"
+    }
+])
+
+db.posts.insertMany([
+    {
+        title: "My first post",
+        text: This is my first post",
+        tags: ["new", "tech"],
+        creator: ObjectId(""),
+        comments: [
+            {
+                text: "aaab",
+                author: ObjectId("")
+            }
+        ]
+    }
+])
+
+Understanding Schema Validation
+--------------------------------
+insertOne()
+||
+Collection 
+||
+Validation Schema => Rejected
+||
+Accepted
+
+
+ValidationLevel     
+Which documents get validated  
+strict => All insert & updates
+
+moderate => All inserts & updates to correct documents
+
+
+ValidationAction         
+What happens if Validation fails?
+error => throw error and deny insert/update
+warn => Log warning but proceed
+
+db.posts.drop()
+
+db.posts.findOne() //null
+
+db.createCollection('posts', {
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['title', 'text', 'creator', 'comments'],
+      properties: {
+        title: {
+          bsonType: 'string',
+          description: 'must be a string and is required'
+        },
+        text: {
+          bsonType: 'string',
+          description: 'must be a string and is required'
+        },
+        creator: {
+          bsonType: 'objectId',
+          description: 'must be an objectid and is required'
+        },
+        comments: {
+          bsonType: 'array',
+          description: 'must be an array and is required',
+          items: {
+            bsonType: 'object',
+            required: ['text', 'author'],
+            properties: {
+              text: {
+                bsonType: 'string',
+                description: 'must be a string and is required'
+              },
+              author: {
+                bsonType: 'objectId',
+                description: 'must be an objectid and is required'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+});
+
+
+Data Modelling & Structuring -
+
+Things to Consider
+1. In which Format will you fetch your Data?
+2. How often will you fetch and change your Data?
+3. How much data will you save (and how big is it)?
+4. How is your Data related?
+5. Will Duplicates hurt you (=> many Updates)?
+6. Will you hit Data/ Storage Limits?
+
+CADE
+MIND
+Module Summary
+--------------------
+1. Modelling Schemas
+a) Schemas should be modelled based on your application needs
+b) Important factors are: Read and write frequency, relations, amount (and size) of data
+
+2. Schema Validation
+a) You can define rules to validate inserts and update before writing to the database
+b) Choose your validation level and action based on your application requirements
+
+3. Modelling Relations
+a) Two options: Embedded documents or references
+b) Use embedded documents if you got one-to-one or one-to-many relationships and no app or data size reason to split
+c) Use references if data amount/ size or application needs require it or for many-to-many relations
+d) Exceptions are always possible => Keep your app requirements in mind!
+
+-------------------------------------------------------------------------------
+
+Useful Resources & Links
+Helpful Articles/ Docs:
+
+The MongoDB Limits: https://docs.mongodb.com/manual/reference/limits/
+
+The MongoDB Data Types: https://docs.mongodb.com/manual/reference/bson-types/
+
+More on Schema Validation: https://docs.mongodb.com/manual/core/schema-validation/
+
+
+====================================================================
+                            SECTION 4
+====================================================================
+
+sudo mongod --config /Users/wspace/Mongodb/mongod.cfg
+
+db.help()
+
+test> db.test.help()
+
+Useful Resources & Links
+Helpful Articles/ Docs:
+
+More Details about Config Files: https://docs.mongodb.com/manual/reference/configuration-options/
+
+More Details about the Shell (mongo) Options: https://www.mongodb.com/docs/manual/reference/method/
+
+More Details about the Server (mongod) Options: https://docs.mongodb.com/manual/reference/program/mongod/
+
+====================================================================
+                            SECTION 5
+====================================================================
+MongoDB Compass
+----------------
+Exploring the Data Visually
+
+Useful Resources & Links
+The MongoDB Compass Docs: https://docs.mongodb.com/compass/master/install/
+
+Only available in the Enterprise Edition => Exploring Schemas in Compass: https://docs.mongodb.com/compass/master/schema/
+
+
+====================================================================
+                            SECTION 6
+====================================================================
+Diving Deeper Into Create
+--------------------------
+A closer Look at Creating & Importing Documents
+
+Document Creation Methods(CREATE)
+Importing Documents
+
+
+1. insertOne()
+db.collectionName.insertOne({field: "val"})
+
+2. insertMany()
+db.collectionName.insertMany([{field: "val"},{field: "val"}])
+
+3. insert()
+a) db.collectionName.insertOne({field: "val"})
+b) db.collectionName.insertMany([{field: "val"},{field: "val"}])
+
+4. mongoimport
+mongoimport - d cars -c carsList --drop --jsonArray
+
+
+db.hobbies.insertMany([{field: "val"},{field: "val"}])
+
+Ordered Insert =>
+The default behavior of insert is that whenever it incounters with error it will stop the execution further and before getting error whatever data was inserted that won't be rolled back.
+
+To change this behaviour we can set the {ordered: false} as 2 arg in inset method i.e insertMany([{}], {ordered: false}) - it will insert all the correct data and logs the error whereever it encounters with error e.g duplication of id, same data insert again etc
+
+WriteConcern:
+--------------
+1 -> 2 -> 3->3a)
+           ->3b)<-|  
+           ->3c)--|---------------------------------|
+                                                    |
+1. Client (e.g Shell)                               |
+                                                    |
+e.g insertOne() -> {w: 1, j: undefined}             |
+                -> {w: 1, j: true}------------------|
+                -> {w: 1, wtimeout: 200, j: true}---|
+
+2. MongoDB Server(mongod)
+
+3. Storage Engine : responsible for storing
+a) Memory
+b) Data on disk
+c) Journal("Todos) -> 3b)
+
+
+db.persons.insertOne({
+    name: 'Am',
+    age: 31
+},
+{
+    writeConcern: {
+        w: 0 // Setting this to 0 i.e it won't wait for data insertation hence won't give ObjectId in return
+    }
+})
+
+db.persons.insertOne({
+    name: 'Am2',
+    age: 32
+},
+{
+    writeConcern: {
+        w: 1 //default
+    }
+})
+
+db.persons.insertOne({
+    name: 'Am3',
+    age: 33
+},
+{
+    writeConcern: {
+        w: 1, //default
+        j: undefined, or false // By default
+    }
+})
+
+db.persons.insertOne({
+    name: 'Am3',
+    age: 33
+},
+{
+    writeConcern: {
+        w: 1, //default
+        j: true, // creates the documents in the journel i.e kind pf backup
+    }
+})
+
+
+db.persons.insertOne({
+    name: 'Am3',
+    age: 33
+},
+{
+    writeConcern: {
+        w: 1, //default
+        j: true, // creates the documents in the journel i.e kind pf backup
+        wtimeout: 200 // to give time for writing into the servers
+    }
+})
+
+What is Atomicity?
+--------------------
+Operation (e.g insertOne())
+
+--------Error---------|------------Success----------
+|                                                  |
+|                                                  |
+Rolled Back                               Saved as a Whole
+(i.e Nothing is saved)
+
+MongoDB CRUD operations are Atomic on the Document level(including Embedded Documents)
+
+
+======================= Module Summary =============================
+
+1. insertOne(), insertMany()
+a)You can insert documents with insertOne() (one document at a time) or insertMany() (multiple documents)
+
+b) insert() also exists but it's not recommended to use it anymore - it also doesn't return the inserted ids
+
+2. Ordered Insertes
+a) By default, when using insertMany (), inserts are ordered -that means, that the inserting process stops if an error occurs
+
+b) You can change this by switching to unordered inserts" - your inserting process will then continue, even if errors occurred
+c) In both cases, no successful inserts (befare the error) will be rolled back
+
+3. WriteConcern
+a) Data should be stored and you can control the "level of guarantee" of that to happen with the writeConcern option
+b) Choose the option value based on your app requirements
+======================= Module Summary END =============================
+
+
+Useful Resources & Links
+Helpful Articles/ Docs:
+
+insertOne(): https://docs.mongodb.com/manual/reference/method/db.collection.insertOne/
+
+insertMany(): https://docs.mongodb.com/manual/reference/method/db.collection.insertMany/
+
+Atomicity: https://docs.mongodb.com/manual/core/write-operations-atomicity/#atomicity
+
+Write Concern: https://docs.mongodb.com/manual/reference/write-concern/
+
+Using mongoimport: https://docs.mongodb.com/manual/reference/program/mongoimport/index.html
+
+====================================================================
+                            SECTION 7
+====================================================================
+READing Documents with operators
+----------------------------------
+Accessing the Required Data Efficiently
+
+What's inside this module?
+1. Methods, FIlters & operators
+2. Query Selectors
+3. Projection operators
+
+Access the current database - Access this collection - apply method - Equality/Single Value
+
+db.myCollection.find({age: 32})
+
+Access the current database - Access this collection - apply method - Range Filter (field - operator - Value)
+
+db.myCollection.find({age: { $gt: 30}})
+
+Operators:
+------------
+
+Query & Projection  Update      Query Modifiers          Aggregation
+------------------  ---------   -----------------    --------------------
+Query Selectors    | Fields   |    Change Query       | Pipeline Stages
+                              |  behavior(deprecated) | Pipeline operators
+------------------------------|                       |
+Projection Operators | Arrays |                       |
+------------------------------------------------------------------------
+
+How Operators Imapct our Data?
+------------------|-------------------|------------------|----------------
+|     Type        |    Purpose        |    Change Data?  |   Example      |
+--------------------------------------------------------------------------|
+|  Query Operator |   Locate Data     |    No            |     $eq  
+--------------------------------------------------------------------------|
+|  Projection Operator | Modify data presentation | No   |     $
+--------------------------------------------------------------------------|
+| Update Operator |  Modify + add additional data  | Yes | $in
+--------------------------------------------------------------------------|
+
+--------------------------------------------------------------
+Query Selectors:                       Projection Operators
+--------------------------------------------------------------
+1. Comparison   | Evaluation      |     $
+-------------------------------------------------------------
+2. Logical      |  Array          |     $elemMatch
+-------------------------------------------------------------
+3. Element      |  Comments       |    $meta 
+------------------------------------------------------------
+4.         Geospatial             |    $slice
+--------------------------------------------------------------
+
+Understanding findOne() & find()
+---------------------------------
+db.movies.findOne({filterObj})
+
+db.movies.find({filterObj}) 
+
+Equality Operator |
+
+------------------------------------
+Working with comparision
+
+db.movies.find({runtime: {$gt : 30}}) // Greater than
+db.movies.find({runtime: {$gte : 30}}) // Greater than or equal
+db.movies.find({runtime: {$ne : 30}}) // Not Equality
+db.movies.find({runtime: {$eq : 30}}) // Equal
+db.movies.find({runtime: {$lt : 30}}) // Lower than
+db.movies.find({runtime: {$lte : 30}}) // lower than or equal
+
+db.movies.find({runtime: {$in : [30, 42]}}) // FInd the runtime with 30 or 42
+
+db.movies.find({runtime: {$nin : [30, 42]}}) // FInd the runtime with all value except 30 or 42
+
+-------------------------------------------------------
+Querying with Embedded documents:
+
+db.movies.find({"rating.avaerage": {$gt : 7}}) // " Double quotes" is required
+
+db.movies.find({genres: "Drama"}) // looking for Drama in a array
+
+db.movies.find({genres: ["Drama"]}) //  // looking for Drama in a array with exact array
+-----------------------------------------------------------
+
+Logical Operators:
+--------------------
+
+db.movies.find({"rating.avaerage": {$lt : 4}}).count()
+
+db.movies.find({$or: ["rating.avaerage": {$lt : 5}, "rating.avaerage": {$gr : 9.3} ]})
+
+db.movies.find({$nor: ["rating.avaerage": {$lt : 5}, "rating.avaerage": {$gr : 9.3} ]})
+
+db.movies.find().count()
+
+db.movies.find({$or: ["rating.avaerage": {$lt : 5}, "rating.avaerage": {$gr : 9.3} ]}).count()
+
+db.movies.find({$nor: ["rating.avaerage": {$lt : 5}, "rating.avaerage": {$gr : 9.3} ]}).count
+
+
+// OLD Syntax:
+db.movies.find({$and: ["rating.avaerage": {$gt : 9}, genres: "Drama" ]})
+// NEW Syntax:
+db.movies.find({"rating.avaerage": {$gt : 9}, genres: "Drama"})
+
+// By default mongodb is having "and" operator then we use $and, because of multiple conditions as below-
+
+db.movies.find({
+    $and: [
+        {
+            genres: "Drama"
+        },
+        {
+            genres: "Horror"
+        }
+    ]
+})
+
+db.movies.find({
+    genres: "Drama",
+    genres: "Horror"
+}).count()
+
+is equivalent to
+
+db.movies.find({
+    genres: "Horror"
+}).count()
+
+that's why $and operator is needed
+
+
+db.movies.find({ $and: [
+    {
+        genres: "Drama"
+    },
+    {
+        genres: "Horror"
+    }]
+})
+
+Using $not:
+db.movies.find({
+    runtime: { $not: {
+        $eq: 60
+    }
+}
+})
+// equivalent to 
+db.movies.find({
+    runtime: { $ne: 60}
+})
+
+
+// Elements Operators
+use user
+
+db.users.insertMany([
+    {
+        name: "User A",
+        hobbies: [
+            {
+                title: "Sports",
+                frequency: 3
+            }
+        ],
+        phone: 123456789
+    },
+    {
+        name: "User B",
+        hobbies: [
+            {
+                title: "Cooking",
+                frequency: 5
+            }
+        ],
+        phone: "123456789",
+        age: 20
+    },
+
+])
+
+
+// Find user which age property is exists and geater than 20
+db.users.find({
+    age: {
+        $exists: true,
+        $gt: 20
+    }
+})
+
+
+db.users.insertOne({
+    name: "User C",
+    hobbies: [
+        {
+            title: "Cooking",
+            frequency: 5
+        }
+    ],
+    phone: "123456789",
+    age: null
+})
+
+db.users.find({
+    age: {
+        $exists: false
+    }
+})
+
+db.users.find({
+    age: {
+        $exists: false,
+        $ne: null
+    }
+})
+
+Working with $type:
+--------------------
+db.user.find({
+    phone: {
+        $type: "number"
+    }
+})
+
+db.user.find({
+    phone: {
+        $type: "double"
+    }
+})
+
+
+db.user.find({
+    phone: {
+        $type: ["double", "string"]
+    }
+})
+
+Understanding Evaluation Operator - $regx: 
+------------------------------------------
+use movieData;
+
+db.movies.find({
+    summary: {
+        $regex: /musical/ 
+    }
+})
+
+Understanding Evaluation Operators - "$expr"
+-----------------------------------------------
+use financialData
+
+db.sales.insertMany([
+    {
+        volume: 100,
+        target: 120
+    },
+    {
+        volume: 89,
+        target: 80
+    },
+    {
+        volume: 200,
+        target: 177
+    }
+])
+
+db.sales.find({
+    $expr: {
+        $gt: ["$volume", "$target"] // $volume & $target refers to field value and it is used with $expr only
+    }
+})
+
+
+db.sales.find({
+    $expr: {
+        $gt: [
+            {
+                $cond: {
+                    if: {
+                        $gte: ["$volume", 190]
+                    },
+                    then: {
+                        $subsract: ["$volume", 10]
+                    },
+                    else: "$volume"
+                }
+            },
+            "$target"
+        ]
+    }
+})
+
+
+Diving Deeper into querying Arrays
+----------------------------------
+db.users.find({
+    hobbies: {
+        title: "Sports",
+        frequency: 3
+    }
+})
+
+// Mongodb understand this syntax i.e hobbies(array data) and loop through each hobbies and find the matched title
+db.users.find({
+    "hobbies.title": "Sports" 
+})
+
+db.users.find({
+    "hobbies.frequency": {
+        $gt: 2
+    }
+})
+
+
+db.users.insertOne({
+    name: "User D",
+    hobbies: [
+        "Sports",
+        "Cooking",
+        "Hiking"
+    ]
+})
+
+// Find user having 3 hobbies
+db.users.find({
+    hobbies: {
+        $size: 3
+    }
+})
+
+Using Array Query Selectors $all:
+----------------------------------
+// Without $all, returns the exact data which has genre matching order as given in filter 
+db.movieStarts.find({
+    genre:  [
+        "action",
+        "thriller"
+        ]
+})
+
+// $all returns all the data which meets the filter, it doesn't check the order i.e 
+["action", "thriller"] or ["thriller", "action"] $all consider both as it matches the filter conditions
+
+db.movieStarts.find({
+    genre: {
+        $all: [
+        "action",
+        "thriller"
+        ]
+    }
+})
+
+Using Array Query Selectors - $elemMatch
+--------------------------------------------
+db.users.find({
+    $and: [
+        {
+            "hobbies.title": "Sports"
+        },
+        {
+            "hobbies.frequency": {
+                $gte: 2
+            }
+        }
+    ]
+})
+
+Above query gives the multiple documents as any one condition is matched then it will pick that document . it won't work like title = "Sports" and frequency >= 2 for same document
+if in one document title = "Sports" & frequency = 1 and in another document title= "ABC" & frequency >= 2 then also above query will return both data
+
+db.users.find({
+    hobbies: {
+        $elemMatch: {
+            title: "Sports",
+            frequency: {
+                $gte: 3
+            }
+        }
+    }
+})
+
+use boxOffice
+db.exmoviestarts.find({
+ratings: {
+        $elemMatch: {
+            $gt: 8,
+            $lt: 10
+        }
+    }
+})
+
+db.exmoviestarts.find({
+$and: [
+    {
+        ratings: {
+            $elemMatch: {
+                $gt: 8,
+                $lt: 10
+            }
+        }
+    },
+        {
+            genre: {
+                $size: 3
+            }
+        },
+        {
+            "meta.aired": 2018
+        }
+    ]
+})
+
+
+// My Solution
+db.exmoviestarts.find({
+    $and: [
+        {
+            genre: {
+                $size: 3
+            }
+        },
+        {
+            "meta.aired": 2018
+        }, 
+        {
+            ratings: {
+                $gt: 8,
+                $lt: 10
+            }
+        }
+    ]
+})
+
+
+Understanding Cursors 
+----------------------
+use boxOffice
+
+db.movieStarts.find() // returns cursor and by default it gives 20 docs per request 
+
+db.movieStarts.find().next() // To get next 20 docs use next()
+
+const dataCursor = db.movieStarts.find()
+
+dataCursor.forEach(doc => printjson(doc)) // Here getting next 20 docs as using same cursor. if applying the next() like db.movieStarts.find().next() then every time it will assume new cursor and will give the same result i.e 1st 20 results.
+
+dataCursor.hasNext()
+
+sorting Cursor results:
+------------------------
+// Sorting based on rating property
+db.movieStarts.find().sort({
+    "meta.rating": 1
+})
+
+// -1 represents decending order
+db.movieStarts.find().sort({
+    "meta.rating": 1,
+    "meta.runtime": -1 
+})
+
+Skipping & Limiting Cursor:
+----------------------------
+db.movieStarts.find().sort({
+    "meta.rating": 1,
+    "meta.runtime": -1 
+}).skip(1)
+
+db.movieStarts.find().sort({
+    "meta.rating": 1,
+    "meta.runtime": -1 
+}).skip(1).limit(1)
+
+Using Projection to Shape our results:
+----------------------------------------
+// By default _id is not excluded in projection so need to exclude specifically if u wanna remove from result set
+
+db.movieStarts.find({}, {title: 1, genre: 1, meta: 1, _id: 0})
+
+boxOffice> db.movieStarts.find({}, {title: 1, genre: 1, meta: 1, _id: 0})
+[
+  {
+    title: 'The Last Student Returns',
+    meta: { rating: 9.5, aired: 2018, runtime: 100 },
+    genre: [ 'thriller', 'drama', 'action' ]
+  },
+  {
+    title: 'Supercharged Teaching',
+    meta: { rating: 9.3, aired: 2016, runtime: 60 },
+    genre: [ 'thriller', 'action' ]
+  },
+  {
+    title: 'Teach me if you can',
+    meta: { rating: 8.5, aired: 2014, runtime: 90 },
+    genre: [ 'action', 'thriller' ]
+  }
+]
+
+boxOffice> db.movieStarts.find({}, {title: 1, genre: 1, "meta.rating": 1, _id: 0})
+[
+  {
+    title: 'The Last Student Returns',
+    meta: { rating: 9.5 },
+    genre: [ 'thriller', 'drama', 'action' ]
+  },
+  {
+    title: 'Supercharged Teaching',
+    meta: { rating: 9.3 },
+    genre: [ 'thriller', 'action' ]
+  },
+  {
+    title: 'Teach me if you can',
+    meta: { rating: 8.5 },
+    genre: [ 'action', 'thriller' ]
+  }
+]
+
+// Array projection
+// Only need "drama" from genre array in result set 
+boxOffice> db.movieStarts.find({genre: "drama"}, {title: 1, "genre.$": 1, "meta.rating": 1, _id: 0})
+[
+  {
+    title: 'The Last Student Returns',
+    meta: { rating: 9.5 },
+    genre: [ 'drama' ]
+  }
+]
+
+// Overides the drama over action so only getting "action" as first matching elememt in genre
+boxOffice> db.movieStarts.find({genre: {$all: ["drama", "action"]}}, {title: 1, "genre.$": 1, "meta.rating": 1, _id: 0})
+[
+  {
+    title: 'The Last Student Returns',
+    meta: { rating: 9.5 },
+    genre: [ 'action' ]
+  }
+]
+
+// $elemMatch in projection
+boxOffice> db.movieStarts.find({genre: "drama"}, {title: 1, "genre": {$elemMatch: {$eq: "action"}}, "meta.rating": 1, _id: 0})
+[
+  {
+    title: 'The Last Student Returns',
+    meta: { rating: 9.5 },
+    genre: [ 'action' ]
+  }
+]
+
+Understanding $slice 
+-----------------------
+boxOffice> db.movieStarts.find({genre: "drama"}, {title: 1, "genre": {$slice: 2}})
+[
+  {
+    _id: ObjectId('6623c7bca898819c05e264eb'),
+    title: 'The Last Student Returns',
+    genre: [ 'thriller', 'drama' ]
+  }
+]
+
+
+// Skip 1st genre and pick next 2 genre in result set
+
+boxOffice> db.movieStarts.find({genre: "drama"}, {title: 1, "genre": {$slice: [1, 2]}})
+[
+  {
+    _id: ObjectId('6623c7bca898819c05e264eb'),
+    title: 'The Last Student Returns',
+    genre: [ 'drama', 'action' ]
+  }
+]
+
+Useful Resources & Links
+Helpful Articles/ Docs:
+
+More on find(): https://docs.mongodb.com/manual/reference/method/db.collection.find/
+
+More on Cursors: https://docs.mongodb.com/manual/tutorial/iterate-a-cursor/
+
+Query Operator Reference: https://docs.mongodb.com/manual/reference/operator/query/
+
+
+====================================================================
+                            SECTION 8
+====================================================================
+Update Operations:
+====================
+What's Inside?
+1. Document Updating Operator(UPDATE)
+2. Updating Fields
+3. Updating Arrays
+
+Updating Fields with "updateOne()", "updateMany()" and "$set"
+----------------------------------------------------------------
+use user
+
+db.users.updateOne({
+        name: "Chris"
+    }, 
+    {
+        $set: {
+        hobbies: [
+            {
+                title: "Sports",
+                frequency: 5
+            },
+            {
+                title: "Cooking",
+                frequency: 3
+            },
+            {
+                title: "Hiking",
+                frequency: 1
+            }
+        ]
+    }
+})
+
+db.users.updateMany(
+    {
+        "hobbies.title": "Sports"
+    }, 
+    {
+        $set: {
+            isSporty: true 
+        }
+    }
+)
+
+
+//Updating multiple fields with $set 
+-------------------------------------
+db.users.updateOne({
+        _id: ObjectId('6623c862920fa2e3de07efe6')
+    }, 
+    {
+        $set: {
+            age: 31,
+            phone: 7767985032
+    }
+})
+
+// Incrementing & Decrementing values
+db.users.updateOne(
+    {
+        name: "Manuel"
+    },
+    {
+        $inc: {
+            age: 2
+        }
+    }
+)
+
+// Decrementing user age and setting isSporty property to false 
+db.users.updateOne(
+    {
+        name: "Manuel"
+    },
+    {
+        $inc: {
+            age: -1
+        },
+        $set: {
+            isSporty: false
+        }
+    }
+)
+
+// Update the age field and set it to 35 if old value is greater than new value
+db.users.updateOne(
+    {
+        name: "Manuel"
+    },
+    {
+        $min: {
+            age: 35
+        }
+    }
+)
+// Update the age field and set it to 35 if old value is lesser than new value
+
+db.users.updateOne(
+    {
+        name: "Manuel"
+    },
+    {
+        $max: {
+            age: 35
+        }
+    }
+)
+
+// Multiply the age by 1.1
+db.users.updateOne(
+    {
+        name: "Manuel"
+    },
+    {
+        $mul: {
+            age: 1.1
+        }
+    }
+)
+
+Getting rid of Fields
+----------------------
+db.users.updateMany(
+    {
+        isSporty: true
+    },
+    {
+        $set: {
+            phone: null
+        }
+    }
+)
+
+// To remove the property use unset 
+db.users.updateMany(
+    {
+        isSporty: true
+    },
+    {
+        $unset: {
+            phone: ""
+        }
+    }
+)
+
+// Renaming fields
+db.users.updateMany(
+    {},
+    {
+        $rename: { 
+            age: "totalAge"
+        }
+    }
+)
+
+// Understanding "upsert"
+
+// Update data if found else insert data freshly
+db.users.updateOne(
+    {
+        name: "Maria"
+    },
+    {
+        $set: {
+            age: 29,
+            hobbies: [
+                {
+                    title: "Good food",
+                    frequency: 3
+                }
+            ],
+            isSporty: true
+        }
+    },
+    {
+        upsert: true
+    }
+)
+
+{
+  acknowledged: true,
+  insertedId: ObjectId('66240ad23b41453c550376ff'),
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 1
+}
+
+// Updating Matched Array Elements
+db.users.find(
+    {
+        $and: [
+            {
+                "hobbies.title": "Sports"
+            }, 
+            {
+                "hobbies.frequency": {
+                    $gt: 3
+                }
+            }
+        ]
+    }
+)
+
+db.users.find(
+    {
+        hobbies: {
+            $elemMatch: {
+                title: "Sports",
+                frequency: {
+                    $gt: 3
+                }
+            }
+        }
+    }
+)
+
+db.users.updateMany(
+    {
+        hobbies: {
+            $elemMatch: {
+                title: "Sports",
+                frequency: {
+                    $gt: 3
+                }
+            }
+        }
+    },
+    {
+        $set: {
+            "hobbies.$.highFrequency": true
+        }
+    }
+)
+
+user> db.users.find( { hobbies: { $elemMatch: { title: "Sports", frequency: { $gt: 3 } } } } )
+[
+  {
+    _id: ObjectId('6623f915a898819c05e26504'),
+    name: 'Chris',
+    hobbies: [
+      { title: 'Sports', frequency: 5, highFrequency: true },
+      { title: 'Cooking', frequency: 3 },
+      { title: 'Hiking', frequency: 1 }
+    ],
+    isSporty: true
+  }
+]
+// Updating All Array elements
+db.users.find(
+    {
+        "hobbies.frequency": {
+            $gt: 2
+        }
+    }
+)
+
+db.users.updateMany(
+    {
+        "hobbies.frequency": {
+            $gt: 2
+        }
+    },
+    {
+        $set: {
+            "hobbies.$.goodFrequency": true
+        }
+    }
+)
+
+db.users.updateMany(
+    {
+        age: {
+            $gt:10
+        }
+    }, 
+    {
+        $inc: {
+            "hobbies.$[].frequency": -1
+        }
+    }
+)
+
+
+db.users.find(
+    {
+        "hobbies.frequency": {
+            $gt: 2
+        }
+    }
+)
+
+// update the data of specific obj props of an array with $[el] (el is just like variable which is used inside arrayFilters)
+db.users.updateMany(
+    {
+        "hobbies.frequency": {
+            $gt: 2
+        }
+    },
+    {
+        $set: {
+            "hobbies.$[el].goodFrequency": true
+        }
+    },
+    {
+        arrayFilters:[
+            {
+                "el.frequency": {
+                    $gt: 1
+                }
+            }
+        ]
+    }
+)
+
+// Adding Elements to Arrays
+db.users.updateOne(
+    {
+        name: "Maria"
+    },
+    {
+        $push: {
+            hobbies: {
+                title: "Sports",
+                frequency: 2
+            }
+        }
+    }
+)
+
+
+db.users.updateOne(
+    {
+        name: "Maria"
+    },
+    {
+        $push: {
+            hobbies: {
+                $each: [
+                    {
+                        title: "Good Wine",
+                        frequency: 1
+                    },
+                    {
+                        title: "Hiking",
+                        frequency: 2
+                    }
+                ],
+                $sort: {
+                    frequency: -1
+                }
+            }
+        }
+    }
+)
+
+db.users.updateOne(
+    {
+        name: "Maria"
+    },
+    {
+        $push: {
+            hobbies: {
+                $each: [
+                    {
+                        title: "Good Wine",
+                        frequency: 1
+                    },
+                    {
+                        title: "Hiking",
+                        frequency: 2
+                    }
+                ],
+                $sort: {
+                    frequency: -1
+                },
+                $slice: 1
+            }
+        }
+    }
+)
+
+// Removing Elements From Arrays
+db.users.updateOne(
+    {
+        name: "Maria"
+    },
+    {
+        $pull: {
+            hobbies: {
+                title: "Sports",
+                frequency: 2
+            }
+        }
+    }
+)
+
+// Removing last Element From Arrays
+db.users.updateOne(
+    {
+        name: "Maria"
+    },
+    {
+        $pop: {
+            hobbies: 1 
+        }
+    }
+)
+// -1 for 1st 1 for last
+
+// Understanding $addToSet (set the unique value only but $push add duplicate value as well )
+db.users.updateOne(
+    {
+        name: "Maria"
+    },
+    {
+        $addToSet: {
+            hobbies: {
+                title: "Sports",
+                frequency: 2
+            }
+        }
+    }
+)
+
+Useful Resources & Links
+Helpful Articles/ Docs:
+
+Official Document Updating Docs: https://docs.mongodb.com/manual/tutorial/update-documents/
+
+====================================================================
+                            SECTION 9
+====================================================================
+ Understanding Delete Operations
+
+ db.users.deleteOne({
+    name: "Maria"
+ })
+
+// Delete users having age greater than 20 and isSporty true
+ db.users.deleteMany(
+    {
+        age: {
+            $gt: 20
+        },
+        isSporty: true
+    }
+ )
+
+  db.users.deleteMany(
+    {
+        age: {
+            $exists: false
+        },
+        isSporty: true
+    }
+ )
+
+ // Delete All Enteries in a collection
+ db.users.deleteMany({})
+
+// mostly used by admin
+ db.users.drop()
+
+// drop the current db
+ db.dropDatabase()
+
+ Useful Resources & Links
+Helpful Articles/ Docs:
+
+Official Document Deletion Docs: https://docs.mongodb.com/manual/tutorial/remove-documents/
+
+====================================================================
+                            SECTION 10
+====================================================================
+Working with indexes
+--------------------
+Retrieving Data Efficiently
+
+What's Inside?
+1. What are Indexes?
+2. Different Types of Indexes
+3. Using & Optimizing Indexes
+
+Why Indexes?
+To make search query faster as creating index means
+1. Creating a sorted list with the indexed field
+2. As indexed List is sorted and ordered so it becomes easy to find the data fatser and easly
+e.g searching the product name starts with "M" then let say we have product index list then it will directly jump to M letter and look for the exact match and return the data
+
+but incase of without indexing, it scans the whole documents list and returns the matching data 
+
+Don't use Too many Indexes!!!
+On every insert, index data is inserted in indexed list as well so creating multiple indexes can make search query fatser but insert operation will be slow so avoid using multiple indexes
+
+
+use contactData
+
+db.contacts.find(
+    {
+        "dob.age": {
+            $gt: 60
+        }
+    }
+)
+
+
+db.contacts.explain().find(
+    {
+        "dob.age": {
+            $gt: 60
+        }
+    }
+)
+
+explain() works for update, delete and find not for insert
+
+db.contacts.explain("executionStats").find(
+    {
+        "dob.age": {
+            $gt: 60
+        }
+    }
+)
+
+// executionTimeMillis: 4,
+
+db.contacts.createIndex({
+    "dob.age": 1
+})
+// executionTimeMillis: 4 // due to less data set, we didn't get difference
+
+// 1 for ascending & -1 for descending
+
+Indexes Behind the Scenes
+What does createIndex() do in detail?
+
+Whilst we can't really see the index, you can think of the index as a simple list of values + pointers to the original document.
+
+Something like this (for the "age" field):
+
+(29, "address in memory/ collection a1")
+
+(30, "address in memory/ collection a2")
+
+(33, "address in memory/ collection a3")
+
+The documents in the collection would be at the "addresses" a1, a2 and a3. The order does not have to match the order in the index (and most likely, it indeed won't).
+
+The important thing is that the index items are ordered (ascending or descending - depending on how you created the index). createIndex({age: 1}) creates an index with ascending sorting, createIndex({age: -1}) creates one with descending sorting.
+
+MongoDB is now able to quickly find a fitting document when you filter for its age as it has a sorted list. Sorted lists are way quicker to search because you can skip entire ranges (and don't have to look at every single document).
+
+Additionally, sorting (via sort(...)) will also be sped up because you already have a sorted list. Of course this is only true when sorting for the age.
+
+db.contacts.dropIndex({
+    "dob.age": 1
+})
+
+// Scenerio where small data set is returned from filter then indexing will be good to do but scenerio where mostly all or major data set is returned in results then indexing might slow down the performance
+
+Creating compound indexes
+--------------------------
+db.contacts.createIndex(
+    {
+        gender: 1
+    }
+)
+
+db.contacts.explain("executionStats).find({gender: "male"})
+
+db.contacts.dropIndex({gender: 1})
+
+// Compound Index
+db.contacts.createIndex(
+    {
+        "dob.age": 1,
+        gender: 1
+    }
+)
+
+db.contacts.explain().find({
+    "dob.age" : 35,
+    gender: "male"
+})
+
+db.contacts.explain().find({
+    "dob.age" : 35
+})
+
+Compound index is fetching data from left to right!
+
+Check:
+winningPlan: {
+    inputStage: {
+        stage: "IXSCAN", // i.e index scan was performed
+        indexName: "dob.age_1_gender_1"
+    }
+}
+
+if we create compund index then it searchs from left to right e.g if we searched based on age only or age and gender then it will perform index search but if we search based on gender only then it will perform collection scan search as compound index is working from left to right.
+
+Understanding indexes for sorting:
+----------------------------------
+db.contacts.explain().find({
+    "dob.age": 35
+}).sort({
+    gender: 1
+})
+
+db.contacts.getIndexes()
+
+Configuring Indexes:
+------------------------
+db.contacts.createIndex(
+    {
+        email: 1
+    }, 
+    {
+        unique: true
+    }
+)
+
+Understanding Partial Filter:
+------------------------------
+db.contacts.createIndex({
+    "dob.age": 1
+},
+{
+    partialFilterExpression: {
+        gender: "male"
+    }
+})
+
+
+db.contacts.createIndex({
+    "dob.age": 1
+},
+{
+    partialFilterExpression: {
+        "dob.age": {
+            $gt: 60
+        }
+    }
+})
+
+db.contacts.find({
+    "dob.age": {
+        $gt: 60
+    }
+})
+
+db.contacts.explain().find({
+    "dob.age": {
+        $gt: 60
+    }
+})
+
+
+db.contacts.find({
+    "dob.age": {
+        $gt: 60
+    },
+    gender: "male"
+})
+
+Difference b/w compund and partial index: is partial index consumes less memory.
+
+Applying the partial index:
+---------------------------
+db.users.insertMany([
+    {
+        name: "Max",
+        email: "max@test.com"
+    },
+    {
+        name: "Manu"
+    }
+])
+
+db.users.createIndex({
+    email: 1
+})
+
+db.users.dropIndex({
+    email:1
+})
+
+db.users.createIndex({
+    email: 1
+},
+{
+    unique: true
+})
+
+db.users.insertOne(
+    {
+        name: "Anna"
+    }
+)
+
+
+In mongodb, if one field with 2 data with same value as null and field is defined as unique index then it won't allow to insert data into the table.
+
+e.g. for one document, we have {email: "a@test.com", name: "A"} and for another document we want { name: "A"}
+then in such scenerio if wanna create index then we have to apply partial index.
+
+db.users.createIndex({
+    email: 1
+},
+{
+    unique: true,
+    partialFilterExpression: {
+        email: {
+            $exists: true
+        }
+    }
+})
+
+Understanding TTL (Time To Live) Index:
+-----------------------------------------
+db.sessions.insertOne({
+    data: "asdfas",
+    createdAt: new Date()
+})
+
+
+db.sessions.createIndex({
+    createdAt: 1
+},
+{
+    expireAfterSeconds: 10
+}
+)
+// {expireAfterSeconds: 10} won't work on compound index
+
+db.sessions.insertOne({
+    data: "asdfas",
+    createdAt: new Date()
+})
+
+db.sessions.find() // After 10 seconds, insered session data will be deletedCount
+
+
+Query Diagnosis & Query Planning:
+---------------------------------
+explain() :
+1. queryPlanner: Show summary for executed query + Winning plan
+
+2. executionStats: Show detailed summary for executed query + Winning plan + possibly Rejected plans
+
+3. allPlansExecution: Show detailed summary for executed query + winnning plan + winning plan decision process
+
+
+Efficient queries & covered queries
+------------------------------------
+Milliseconds Process Time
+
+IXSCAN: Scanning the indexed list 
+COLLSCAN: Scanning whole collections
+
+IXSCAN typically beats COLLSCAN
+
+# of Keys (in Index) Examined
+
+# of Documents Examined
+
+# of Documents Returned
+
+V:139=> Covered Query:
+
+How MongoDB Rejects a Plan:
+
+Using Multi-Key Indexes:
+
+
+Understanding TEXT index:
+db.products.insertMany([
+    {
+        title: "A Book",
+        description: "this is an awesome book"
+    }
+])
+
+db.products.createIndex({
+    description: "text"
+})
+
+// 1 is for ascending -1 for descending and text for text indexing
+
+db.products.find({
+    $text: {
+        $search: "awesome"
+    }
+})
+
+// TO search for a phrase, keept in search text in double quotes else it will seach text for all the words in search text and if any one is matched with document it will be returned
+
+db.products.find({
+    $text: {
+        $search: "\"awesome book\""
+    }
+})
+
+
+db.products.find({
+    $text: {
+        $search: "\"awesome book\""
+    }
+}, {
+    score: {
+        $meta: "textScore"
+    }
+})
+
+
+
+db.products.find({
+    $text: {
+        $search: "\"awesome book\""
+    }
+}, {
+    score: {
+        $meta: "textScore"
+    }
+}).sort({
+    $meta: "textScore"
+})
+
+// Creating combined text indexes:
+
+Note: Text Index can not be dropped as we drop other index. To drop the text index we have to mention the index_name
+
+db.products.dropIndex("descending_text")
+
+db.products.createIndex({
+    title: "text",
+    description: "text"
+})
+
+db.products.find({
+    $text: {
+        $search: "ship"
+    }
+})
+
+Using Text Indexes to Excludes Words:
+
+db.products.find({
+    $text: {
+        $search: "awesome -book" 
+    }
+})
+// - minus is used to exclude i.e book is excluded
+
+Setting the default language & using weights:
+
+db.products.createIndex(
+    {
+        title: "text",
+        description: "text"
+    }, 
+    {
+        default_language: "german",
+        weights: {
+            title: 1,
+            description: 10
+        }
+    }
+)
+
+
+db.products.find({
+    $text: {
+        $search: "",
+        $language: "",
+        $caseSensetive: true,
+    }
+})
+
+
+db.products.createIndex({
+    title: "text",
+    description: "text"
+}, 
+{
+    background: true
+})
+
+
+
+Useful Resources & Links
+Helpful Articles/ Docs:
+
+More on partialFilterExpressions: https://docs.mongodb.com/manual/core/index-partial/
+
+Supported default_languages: https://docs.mongodb.com/manual/reference/text-search-languages/#text-search-languages
+
+How to use different languages in the same index: https://docs.mongodb.com/manual/tutorial/specify-language-for-text-index/#create-a-text-index-for-a-collection-in-multiple-languages
+
+
+====================================================================
+                            SECTION 11
+====================================================================
+Working with Geospetial Data:
+-----------------------------
+use awesomeplaces
+
+db.places.insertOne({
+    name: "California Academy of Science",
+    location: {
+        type: "Point",
+        coordinates: [
+            -122.4724356,
+            37.7672544
+        ]
+    }
+})
+
+
+db.places.findOne()
+
+Running Geo queries
+--------------------
+db.paces.find({
+    location: {
+        $near: {
+            $geomatery: {
+                type: "Ponit",
+                coordinates: [
+                    
+                ]
+            }
+        }
+    }
+})
+====================================================================
+                            SECTION 12
+====================================================================
+====================================================================
+                            SECTION 13
+====================================================================
+====================================================================
+                            SECTION 14
+====================================================================
+====================================================================
+                            SECTION 15
+====================================================================
+====================================================================
+                            SECTION 16
+====================================================================
+====================================================================
+                            SECTION 17
+====================================================================
+====================================================================
+                            SECTION 18
+====================================================================
+====================================================================
+                            SECTION 19
+====================================================================
+
+
+Results-driven and highly skilled Web Developer with over 5+ years of experience in the industry. Proficient in a wide range of technologies including HTML, CSS, Sass, Bootstrap, PHP, JavaScript, jQuery, Laravel, Node.js, React.js, Vue.js, MySQL, as well as basic knowledge in CICD pipeline setup, AWS services (EC2, S3), Docker, Kubernetes, and Ansible.
